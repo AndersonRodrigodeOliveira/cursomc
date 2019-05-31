@@ -2,56 +2,58 @@ package com.aoliveira.cursomc.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class Categoria implements Serializable {
-	/**
-	 * Implementa Serializable que possibilita o objeto ser
-	 * convertido em uma sequência de bytes, para gravar em arquivos,
-	 * trafegar em rede e etc.
-	 */
+public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	// Atributos
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	private Double preco;
 	
-	//Associações
-	@ManyToMany(mappedBy = "categorias")
-	private List<Produto> produtos = new ArrayList<>();
-	
-	// Construtores
-	public Categoria() {
+	// Associações
+	@ManyToMany
+	@JoinTable(
+		name = "PRODUTO_CATEGORIA",
+		joinColumns = @JoinColumn(name = "produto_id"),
+		inverseJoinColumns = @JoinColumn(name = "categoria_id")
+	)
+
+	private List<Categoria> categorias = new ArrayList<>();
+
+	public Produto() {
 		
 	}
-
-	public Categoria(Integer id, String nome) {
+	
+	public Produto(Integer id, String nome, Double preco) {
 		super();
 		this.id = id;
 		this.nome = nome;
+		this.preco = preco;
 	}
-
-    // getters and // setters
 	
+	public List<Categoria> getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(List<Categoria> categorias) {
+		this.categorias = categorias;
+	}
+
 	public Integer getId() {
-		return this.id;
-	}
-
-	public List<Produto> getProdutos() {
-		return produtos;
-	}
-
-	public void setProdutos(List<Produto> produtos) {
-		this.produtos = produtos;
+		return id;
 	}
 
 	public void setId(Integer id) {
@@ -59,15 +61,21 @@ public class Categoria implements Serializable {
 	}
 
 	public String getNome() {
-		return this.nome;
+		return nome;
 	}
 
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
 
-    // hashCode and Equals
-	
+	public Double getPreco() {
+		return preco;
+	}
+
+	public void setPreco(Double preco) {
+		this.preco = preco;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -84,7 +92,7 @@ public class Categoria implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Produto other = (Produto) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -92,5 +100,5 @@ public class Categoria implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 }
